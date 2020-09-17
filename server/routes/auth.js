@@ -38,7 +38,7 @@ router.post('/signup', (req, res) => {
 router.post('/signin', (req, res) => {
   const {email, password} = req.body;
   if(!email || !password) {
-    return res.status(422).json({err: "Please fill all the fields"});
+    return res.status(422).json({error: "Please fill all the fields"});
   }
   User.findOne({email: email})
     .then(user => {
@@ -49,9 +49,10 @@ router.post('/signin', (req, res) => {
         .then(matched => {
           if(matched) {
             const token = jwt.sign({_id: user._id}, JWT_SECRET);
-            res.json({token});
+            const {_id, name, email} = user;
+            res.json({token, user: {_id, name, email}});
           } else {
-            res.status(433).json({err: "Invalid email or password"});
+            res.status(433).json({error: "Invalid email or password"});
           }
         }).catch(err => console.log(err));
     }).catch(err => console.log(err));
