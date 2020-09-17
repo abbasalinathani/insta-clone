@@ -46,7 +46,7 @@ const CreatePost = () => {
         }
       })
     }
-  }, [url])
+  }, [url]);
 
   return (
     <div
