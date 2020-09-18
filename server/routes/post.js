@@ -73,8 +73,6 @@ router.put('/comment', requireLogin, (req, res) => {
     postedBy: req.user._id
   };
 
-  // res.send(comment)
-
   Post.findByIdAndUpdate(req.body.postId, {
     $push: {comments: comment}
   }, {new: true, useFindAndModify: false})
