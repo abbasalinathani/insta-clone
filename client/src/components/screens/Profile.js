@@ -1,21 +1,44 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../../App';
+import { useParams } from 'react-router-dom';
 
 const Profile = () => {
   const [myPosts, setMyPosts] = useState([]);
+  const [user, setUser] = useState({})
   const {state, dispatch} = useContext(UserContext);
+  const {userId} = useParams();
 
   useEffect(() => {
-    fetch('myPosts', {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("jwt")
-      }
-    }).then(res => res.json())
-    .then(result => {
-      setMyPosts(result.posts);
-    }).catch(err => console.log(err));
-  }, [])
+    if(userId) {
+      fetch(`/user/${userId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("jwt")
+        }
+      }).then(res => res.json())
+      .then(result => {
+        setMyPosts(result.posts);
+        setUser(result.user);
+      }).catch(err => console.log(err));
+    } else {
+      setUser(state);
+      fetch('/myPosts', {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("jwt")
+        }
+      }).then(res => res.json())
+      .then(result => {
+        setMyPosts(result.posts);
+      }).catch(err => console.log(err));
+    } 
+  }, [userId]);
+
+  useEffect(() => {
+    if(!userId && state) {
+      setUser(state);
+    }
+  }, [state]);
 
   return (
     <div style={{maxWidth: "550px", margin: "10px auto"}}>
@@ -34,9 +57,10 @@ const Profile = () => {
           />
         </div>
         <div>
-          <h4>{state && state.name}</h4>
+          <h4>{user && user.name}</h4>
+          <h4>{user && user.email}</h4>
           <div style={{display: "flex", justifyContent: "space-between", width: "108%"}}>
-            <h6>40 posts</h6>
+            <h6>{myPosts.length} Posts</h6>
             <h6>40 followers</h6>
             <h6>40 following</h6>
           </div>

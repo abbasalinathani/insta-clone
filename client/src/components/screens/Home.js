@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../../App';
-
+import { Link } from 'react-router-dom';
 const Home = () => {
   const [data, setData] = useState([]);
   const {state, dispatch} = useContext(UserContext);
@@ -128,7 +128,15 @@ const Home = () => {
           return (
             <div className="card home-card" key={item._id}>
               <h5>
-                {item.postedBy.name}
+                <Link
+                  to={
+                    item.postedBy._id === state._id
+                    ? "/profile"
+                    : `/profile/${item.postedBy._id}`
+                  }
+                >
+                  {item.postedBy.name}
+                </Link>
                 {
                   item.postedBy._id === state._id
                   ? <i
