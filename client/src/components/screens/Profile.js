@@ -40,6 +40,69 @@ const Profile = () => {
     }
   }, [state]);
 
+  const followUser = () => {
+    fetch("/follow", {
+      method: "put",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("jwt")
+      },
+      body: JSON.stringify({
+        followId: userId
+      })
+    }).then(res => res.json())
+    .then(result => {
+      dispatch(
+        {
+          type: "UPDATE",
+          payload: {
+            following: result.following,
+            followers: result.followers
+          }
+        });
+      localStorage.setItem("user", JSON.stringify(result));
+      setUser((prevState) => {
+        return {
+          ...prevState,
+          followers: [...prevState.followers, result._id]
+        }
+      });
+    }).catch(err => console.log(err));
+  };
+  
+  const unfollowUser = () => {
+    fetch("/unfollow", {
+      method: "put",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("jwt")
+      },
+      body: JSON.stringify({
+        unfollowId: userId
+      })
+    }).then(res => res.json())
+    .then(result => {
+      dispatch(
+        {
+          type: "UPDATE",
+          payload: {
+            following: result.following,
+            followers: result.followers
+          }
+        });
+      localStorage.setItem("user", JSON.stringify(result));
+      setUser((prevState) => {
+      const newFollower = prevState.followers.filter(item => {
+        return item !== result._id
+      });
+      return {
+          ...prevState,
+          followers: newFollower
+        }
+      });
+    }).catch(err => console.log(err));
+  };
+
   return (
     <div style={{maxWidth: "550px", margin: "10px auto"}}>
       <div
@@ -61,9 +124,28 @@ const Profile = () => {
           <h4>{user && user.email}</h4>
           <div style={{display: "flex", justifyContent: "space-between", width: "108%"}}>
             <h6>{myPosts.length} Posts</h6>
-            <h6>40 followers</h6>
-            <h6>40 following</h6>
+            <h6>{user && user.followers ? user.followers.length : 0} followers</h6>
+            <h6>{user && user.followers ? user.following.length : 0} following</h6>
           </div>
+          {
+            userId
+            ? <button
+                className="btn waves-effect waves-light #64b5f6 blue darken-1"
+                style={{margin: "10px 0px"}}
+                onClick={() => {
+                  user && user.followers?.includes(state._id)
+                  ? unfollowUser()
+                  : followUser()
+                }}
+              >
+                {
+                  user && user.followers?.includes(state._id)
+                  ? "Unfollow"
+                  : "Follow"
+                }
+              </button>
+            : ""
+          }
         </div>
       </div>
       <div className="gallery">
