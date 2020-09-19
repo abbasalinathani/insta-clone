@@ -86,4 +86,35 @@ router.put('/comment', requireLogin, (req, res) => {
   })
 });
 
+router.delete('/deletePost/:postId', requireLogin, (req, res) => {
+  Post.findByIdAndDelete(req.params.postId, {useFindAndModify: false})
+  .populate("postedBy", "_id name email")
+  .exec((err, post) => {
+    if(err || !post) {
+      return res.status(422).json({error: err})
+    }
+    if(post.postedBy._id.toString() === req.user._id.toString()) {
+      post.remove()
+      .then(result => {
+        res.json(result);
+      }).catch(err => console.log(err));
+    }
+  })
+});
+
+router.put('/deleteComment/:commentId', requireLogin, (req, res) => {
+  console.log(req.params.commentId);
+  Post.findOneAndUpdate({"comments._id": req.params.commentId}, {
+    $pull: {comments: {_id: req.params.commentId}}
+  }, {new: true, useFindAndModify: false})
+  .populate("postedBy", "_id name email")
+  .populate("comments.postedBy", "_id name email")
+  .exec((err, post) => {
+    if(err || !post) {
+      return res.status(422).json({error: err})
+    }
+    post.update();
+    res.json(post);
+  })
+});
 module.exports = router;
