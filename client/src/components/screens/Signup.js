@@ -7,7 +7,7 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [image, setImage] = useState("");
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState(undefined);
   const history = useHistory();
 
   const uploadPic = ()=> {
