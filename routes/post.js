@@ -28,6 +28,7 @@ router.get('/allPosts', requireLogin, (req, res) => {
   Post.find({postedBy: {$in: [req.user._id, req.user.following]}})
     .populate("postedBy", "_id name email pic")
     .populate("comments.postedBy", "_id name email")
+    .sort("-createdAt")
     .then(posts => {
       res.json({posts})
     }).catch(err => console.log(err));
@@ -36,6 +37,7 @@ router.get('/allPosts', requireLogin, (req, res) => {
 router.get('/myPosts', requireLogin, (req, res) => {
   Post.find({postedBy: req.user._id})
     .populate("postedBy", "_id name email")
+    .sort("-createdAt")
     .then(posts => {
       res.json({posts})
     }).catch(err => console.log(err));
