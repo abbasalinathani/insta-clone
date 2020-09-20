@@ -159,7 +159,6 @@ const Profile = () => {
           </div>
           <div>
             <h4>{user && user.name}</h4>
-            <h4>{user && user.email}</h4>
             <div style={{display: "flex", justifyContent: "space-between", width: "108%"}}>
               <h6>{myPosts.length} Posts</h6>
               <h6>{user && user.followers ? user.followers.length : 0} followers</h6>

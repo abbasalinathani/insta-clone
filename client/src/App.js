@@ -7,6 +7,8 @@ import Profile from './components/screens/Profile';
 import Signup from './components/screens/Signup';
 import Home from './components/screens/Home';
 import CreatePost from './components/screens/CreatePost';
+import ResetPassword from './components/screens/ResetPassword';
+import NewPassword from './components/screens/NewPassword';
 import { reducer, initialState } from './reducers/userReducer';
 
 export const UserContext = createContext();
@@ -19,7 +21,7 @@ const Routing = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if(user) {
       dispatch({type: "USER", payload: user});
-    } else {
+    } else if(!history.location.pathname.startsWith("/reset")) {
       history.push('/login');
     }
   }, []);
@@ -40,6 +42,12 @@ const Routing = () => {
       </Route>
       <Route path="/createPost">
         <CreatePost />
+      </Route>
+      <Route exact path="/reset">
+        <ResetPassword />
+      </Route>
+      <Route path="/reset/:token">
+        <NewPassword />
       </Route>
     </Switch>
   );

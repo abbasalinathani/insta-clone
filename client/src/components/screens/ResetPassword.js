@@ -3,10 +3,8 @@ import { Link, useHistory } from 'react-router-dom';
 import M from 'materialize-css';
 import { UserContext } from '../../App';
 
-const Login = () => {
-  const {state, dispatch} = useContext(UserContext);
+const ResetPassword = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const history = useHistory();
 
   const postData = () => {
@@ -14,25 +12,21 @@ const Login = () => {
       M.toast({html: "Invalid Email", classes: "c62828 red darken-3"})
       return;
     }
-    fetch('/signin', {
+    fetch('/resetPassword', {
       method: "post",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email,
-        password
+        email
       })
     }).then(res => res.json())
     .then(result => {
       if(result.error) {
         M.toast({html: result.error, classes: "c62828 red darken-3"})
       } else {
-        localStorage.setItem("jwt", result.token)
-        localStorage.setItem("user", JSON.stringify(result.user));
-        dispatch({type: "USER", payload: result.user});
-        M.toast({html: "Signin successful!", classes: "#43a047 green darken-1"})
-        history.push('/');
+        M.toast({html: result.message, classes: "#43a047 green darken-1"})
+        history.push('/login');
       }
     }).catch(err => console.log(err));
   };
@@ -47,27 +41,15 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
         <button
           className="btn waves-effect waves-light #64b5f6 blue darken-1"
           onClick={() => {postData()}}
         >
-          Login
+          Reset Password
         </button>
-        <h5>
-          <Link to="/reset">Don't have an account?</Link>
-        </h5>
-        <h6>
-          <Link to="/signup">Forgot Password?</Link>
-        </h6>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default ResetPassword;

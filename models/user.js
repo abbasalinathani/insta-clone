@@ -25,7 +25,9 @@ const userSchema = new mongoose.Schema({
   pic: {
     type: String,
     default: "https://res.cloudinary.com/abbasali/image/upload/v1600589722/blank-profile-picture-973460_1280_1_vidqc1.png"
-  }
+  },
+  resetToken: String,
+  expireToken: Date
 }, {timestamps: true});
 
 mongoose.model("User", userSchema);
