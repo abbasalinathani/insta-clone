@@ -127,7 +127,7 @@ const Home = () => {
         data.map(item => {
           return (
             <div className="card home-card" key={item._id}>
-              <h5>
+              <h5 style={{padding: "5px"}}>
                 <Link
                   to={
                     item.postedBy._id === state._id

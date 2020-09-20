@@ -25,7 +25,7 @@ router.post('/createPost', requireLogin, (req, res) => {
 });
 
 router.get('/allPosts', requireLogin, (req, res) => {
-  Post.find()
+  Post.find({postedBy: {$in: [req.user._id, req.user.following]}})
     .populate("postedBy", "_id name email")
     .populate("comments.postedBy", "_id name email")
     .then(posts => {
@@ -117,4 +117,5 @@ router.put('/deleteComment/:commentId', requireLogin, (req, res) => {
     res.json(post);
   })
 });
+
 module.exports = router;
