@@ -21,7 +21,11 @@ const userSchema = new mongoose.Schema({
   following: [{
     type: ObjectId,
     ref: "User"
-  }]
+  }],
+  pic: {
+    type: String,
+    default: "https://res.cloudinary.com/abbasali/image/upload/v1600589722/blank-profile-picture-973460_1280_1_vidqc1.png"
+  }
 }, {timestamps: true});
 
 mongoose.model("User", userSchema);
