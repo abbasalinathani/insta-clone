@@ -25,7 +25,7 @@ router.post('/createPost', requireLogin, (req, res) => {
 });
 
 router.get('/allPosts', requireLogin, (req, res) => {
-  Post.find({postedBy: {$in: [req.user._id, req.user.following]}})
+  Post.find({postedBy: {$in: [req.user._id, ...req.user.following]}})
     .populate("postedBy", "_id name email pic")
     .populate("comments.postedBy", "_id name email")
     .sort("-createdAt")
